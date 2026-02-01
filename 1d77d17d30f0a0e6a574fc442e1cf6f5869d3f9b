@@ -1,0 +1,23 @@
+packages/opencode/src/provider/transform.ts
+  75a1dbf5f84b901e 663,665
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.40",
+  "base_commit_sha": "1d77d17d30f0a0e6a574fc442e1cf6f5869d3f9b",
+  "prompts": {
+    "75a1dbf5f84b901e": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_3e4eb1e7fffeATpc5vXG9cgBwV",
+        "model": "opencode/kimi-k2.5-free"
+      },
+      "human_author": "Mathias Beugnon <mathias@beugnon.fr>",
+      "messages": [],
+      "total_additions": 6,
+      "total_deletions": 3,
+      "accepted_lines": 6,
+      "overriden_lines": 0
+    }
+  }
+}
