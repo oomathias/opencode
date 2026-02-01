@@ -1,0 +1,23 @@
+packages/opencode/src/provider/transform.ts
+  75a1dbf5f84b901e 661-666,668-670,672
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.40",
+  "base_commit_sha": "36a1de476a9f16966ce52211de850ba8a0cba5f1",
+  "prompts": {
+    "75a1dbf5f84b901e": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_3e4eb1e7fffeATpc5vXG9cgBwV",
+        "model": "opencode/kimi-k2.5-free"
+      },
+      "human_author": null,
+      "messages": [],
+      "total_additions": 16,
+      "total_deletions": 12,
+      "accepted_lines": 11,
+      "overriden_lines": 0
+    }
+  }
+}
