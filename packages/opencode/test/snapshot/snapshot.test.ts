@@ -46,6 +46,29 @@ test("tracks deleted files correctly", async () => {
   })
 })
 
+test("snapshot false disables historical snapshot reads", async () => {
+  await using tmp = await tmpdir({
+    git: true,
+    config: { snapshot: false },
+    init: async (dir) => {
+      await Filesystem.write(`${dir}/a.txt`, "A")
+      return undefined
+    },
+  })
+
+  await Instance.provide({
+    directory: tmp.path,
+    fn: async () => {
+      expect(await Snapshot.track()).toBeUndefined()
+      expect(await Snapshot.patch("hash")).toEqual({ hash: "hash", files: [] })
+      expect(await Snapshot.diff("hash")).toBe("")
+      expect(await Snapshot.diffFull("from", "to")).toEqual([])
+      await expect(Snapshot.restore("hash")).resolves.toBeUndefined()
+      await expect(Snapshot.revert([{ hash: "hash", files: [fwd(tmp.path, "a.txt")] }])).resolves.toBeUndefined()
+    },
+  })
+})
+
 test("revert should remove new files", async () => {
   await using tmp = await bootstrap()
   await Instance.provide({

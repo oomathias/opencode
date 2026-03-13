@@ -19,6 +19,12 @@ export namespace Snapshot {
     return ["--git-dir", git, "--work-tree", Instance.worktree, ...cmd]
   }
 
+  async function enabled() {
+    if (Instance.project.vcs !== "git") return false
+    if (Flag.OPENCODE_DISABLE_SNAPSHOT) return false
+    return (await Config.get()).snapshot !== false
+  }
+
   export function init() {
     Scheduler.register({
       id: "snapshot.cleanup",
@@ -29,9 +35,7 @@ export namespace Snapshot {
   }
 
   export async function cleanup() {
-    if (Instance.project.vcs !== "git") return
-    const cfg = await Config.get()
-    if (cfg.snapshot === false) return
+    if (!(await enabled())) return
     const git = gitdir()
     const exists = await fs
       .stat(git)
@@ -54,9 +58,7 @@ export namespace Snapshot {
   }
 
   export async function track() {
-    if (Instance.project.vcs !== "git") return
-    const cfg = await Config.get()
-    if (cfg.snapshot === false) return
+    if (!(await enabled())) return
     const git = gitdir()
     if (await fs.mkdir(git, { recursive: true })) {
       await Process.run(["git", "init"], {
@@ -91,6 +93,7 @@ export namespace Snapshot {
   export type Patch = z.infer<typeof Patch>
 
   export async function patch(hash: string): Promise<Patch> {
+    if (!(await enabled())) return { hash, files: [] }
     const git = gitdir()
     await add(git)
     const result = await Process.text(
@@ -131,6 +134,7 @@ export namespace Snapshot {
   }
 
   export async function restore(snapshot: string) {
+    if (!(await enabled())) return
     log.info("restore", { commit: snapshot })
     const git = gitdir()
     const result = await Process.run(
@@ -167,6 +171,7 @@ export namespace Snapshot {
   }
 
   export async function revert(patches: Patch[]) {
+    if (!(await enabled())) return
     const files = new Set<string>()
     const git = gitdir()
     for (const item of patches) {
@@ -218,6 +223,7 @@ export namespace Snapshot {
   }
 
   export async function diff(hash: string) {
+    if (!(await enabled())) return ""
     const git = gitdir()
     await add(git)
     const result = await Process.text(
@@ -266,6 +272,7 @@ export namespace Snapshot {
     })
   export type FileDiff = z.infer<typeof FileDiff>
   export async function diffFull(from: string, to: string): Promise<FileDiff[]> {
+    if (!(await enabled())) return []
     const git = gitdir()
     const result: FileDiff[] = []
     const status = new Map<string, "added" | "deleted" | "modified">()
